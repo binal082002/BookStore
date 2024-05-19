@@ -40,7 +40,7 @@ const Contact = () => {
         
         try{
 
-            const response = await fetch('https://bookstore-chj2.onrender.com/api/form/contact', {
+            const response = await fetch('https://ecommbookstoreapp.netlify.app/api/form/contact', {
                 method : "POST",
                 headers : { "Content-Type" : "application/json"},
                 body : JSON.stringify(contact),

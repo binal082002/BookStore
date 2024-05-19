@@ -12,7 +12,7 @@ const AdminOrders = () =>{
 
     const getAllOrders = async() => {
         try{
-            const response = await fetch('https://bookstore-chj2.onrender.com/api/admin/orders',{
+            const response = await fetch('https://ecommbookstoreapp.netlify.app/api/admin/orders',{
                 method : "GET",
                 headers : {
                     Authorization : authToken,
@@ -34,7 +34,7 @@ const AdminOrders = () =>{
 
     const getBookData = async(id) => {
         try{
-            const response = await fetch(`https://bookstore-chj2.onrender.com/api/store/book/${id}`,{
+            const response = await fetch(`https://ecommbookstoreapp.netlify.app/api/store/book/${id}`,{
                 method : "GET",
                 headers : {
                     Authorization : authToken,
