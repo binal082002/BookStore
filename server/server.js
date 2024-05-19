@@ -14,7 +14,7 @@ const bookRoute = require("./router/book-router");
 const order_route = require("./router/order-router");
 
 const corsOptions = {
-    origin : "http://localhost:5173",
+    origin : "https://clever-kelpie-a19809.netlify.app",
     method : "GET, POST, PUT, DELETE, PATCH, HEAD",
     Credentials : true,
 } //giving access to data coming from given origin URL(front-end) to go into database.
