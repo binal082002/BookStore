@@ -34,7 +34,7 @@ const Book = () => {
         e.preventDefault();
         
         try{
-            const response = await fetch('https://ecommbookstoreapp.netlify.app/api/admin/add/book', {
+            const response = await fetch('https://bookstore-chj2.onrender.com/api/admin/add/book', {
                 method : "POST",
                 headers : { 
                     "Content-Type" : "application/json",

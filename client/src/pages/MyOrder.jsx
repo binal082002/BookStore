@@ -16,7 +16,7 @@ const MyOrder = () =>{
     //get singl user data
     const getOrderData = async() => {
         try{
-            const response = await fetch(`https://ecommbookstoreapp.netlify.app/api/auth/order/${params.id}/detail`,{
+            const response = await fetch(`https://bookstore-chj2.onrender.com/api/auth/order/${params.id}/detail`,{
                 method : "GET",
                 headers : {
                     Authorization : authToken,
@@ -39,7 +39,7 @@ const MyOrder = () =>{
     const getBookData = async (id) => {
         try{
 
-            const response = await fetch(`https://ecommbookstoreapp.netlify.app/api/store/book/${id}`,{
+            const response = await fetch(`https://bookstore-chj2.onrender.com/api/store/book/${id}`,{
                 method : "GET",
                 headers : {
                     Authorization : authToken

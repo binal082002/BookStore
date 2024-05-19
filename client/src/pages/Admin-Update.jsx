@@ -17,7 +17,7 @@ const AdminUpdate = () =>{
     //get singl user data
     const getSingleUserData = async() => {
         try{
-            const response = await fetch(`https://ecommbookstoreapp.netlify.app/api/admin/users/${params.id}`,{
+            const response = await fetch(`https://bookstore-chj2.onrender.com/api/admin/users/${params.id}`,{
                 method : "GET",
                 headers : {
                     Authorization : authToken,
@@ -53,7 +53,7 @@ const AdminUpdate = () =>{
 
         try{
 
-            const response = await fetch(`https://ecommbookstoreapp.netlify.app/api/admin/users/update/${params.id}`,{
+            const response = await fetch(`https://bookstore-chj2.onrender.com/api/admin/users/update/${params.id}`,{
                 method : "PATCH",
                 headers : {
                     "Content-Type" : "application/json",

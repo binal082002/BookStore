@@ -9,7 +9,7 @@ const AdminUsers = () =>{
 
     const getAllUsersData = async() => {
         try{
-            const response = await fetch('https://ecommbookstoreapp.netlify.app/api/admin/users',{
+            const response = await fetch('https://bookstore-chj2.onrender.com/api/admin/users',{
                 method : "GET",
                 headers : {
                     Authorization : authToken,
@@ -28,7 +28,7 @@ const AdminUsers = () =>{
     //delete user through deletebutton and given id
     const deleteUser = async(id) => {
         try{
-            const response = await fetch(`https://ecommbookstoreapp.netlify.app/api/admin/users/delete/${id}`,{
+            const response = await fetch(`https://bookstore-chj2.onrender.com/api/admin/users/delete/${id}`,{
                 method : "DELETE",
                 headers : {
                     Authorization : authToken,

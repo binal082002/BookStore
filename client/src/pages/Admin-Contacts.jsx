@@ -8,7 +8,7 @@ const AdminContacts = () =>{
 
     const getAllContacts = async() => {
         try{
-            const response = await fetch('https://ecommbookstoreapp.netlify.app/api/admin/contacts',{
+            const response = await fetch('https://bookstore-chj2.onrender.com/api/admin/contacts',{
                 method : "GET",
                 headers : {
                     Authorization : authToken,
@@ -26,7 +26,7 @@ const AdminContacts = () =>{
 
     const deleteContact = async(id) => {
         try{
-            const response = await fetch(`https://ecommbookstoreapp.netlify.app/api/admin/contacts/delete/${id}`,{
+            const response = await fetch(`https://bookstore-chj2.onrender.com/api/admin/contacts/delete/${id}`,{
                 method : "DELETE",
                 headers : {
                     Authorization : authToken,
