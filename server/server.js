@@ -14,7 +14,7 @@ const bookRoute = require("./router/book-router");
 const order_route = require("./router/order-router");
 
 const corsOptions = {
-    origin : "https://coruscating-dango-e39a39.netlify.app",
+    origin : ["https://coruscating-dango-e39a39.netlify.app", "http://localhost:5000"],
     method : "GET, POST, PUT, DELETE, PATCH, HEAD",
     Credentials : true,
 } //giving access to data coming from given origin URL(front-end) to go into database.
@@ -34,10 +34,6 @@ app.use("/api/admin", adminRoute);
 app.use(errorMiddleware);
 
 const PORT = process.env.PORT || 5000;
-
-if(process.env.NODE_ENV == "production"){
-    app.use(express.static("client/dist"));
-}
 
 connectDB().then(() => {
 
