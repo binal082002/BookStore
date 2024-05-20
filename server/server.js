@@ -14,7 +14,10 @@ const bookRoute = require("./router/book-router");
 const order_route = require("./router/order-router");
 
 const corsOptions = {
-    origin : ["http://localhost:5173"],
+    origin: [
+        "https://luminous-pithivier-231223.netlify.app",  // Netlify deployment URL
+        "http://localhost:5173"  // Local development URL (adjust port if necessary)
+    ],
     method : "GET, POST, PUT, DELETE, PATCH, HEAD",
     Credentials : true,
 } //giving access to data coming from given origin URL(front-end) to go into database.
