@@ -19,7 +19,7 @@ const corsOptions = {
     Credentials : true,
 } //giving access to data coming from given origin URL(front-end) to go into database.
 
-app.use(cors(corsOptions));//we need to define it before fetching the data
+app.use(cors());//we need to define it before fetching the data
 app.use(express.json());//Middleware to use json in this file
 
 app.use("/api/auth", authRoute); //it direct to auth-router.js file.
