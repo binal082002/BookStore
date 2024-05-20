@@ -35,7 +35,7 @@ export const AuthProvider = ({children}) => {
       try{
         setIsloading(true);
         setIsAdmin(false);
-        const response = await fetch("https://bookstore-chj2.onrender.com/api/auth/user", {
+        const response = await fetch("http://localhost:5000/api/auth/user", {
           method : "GET",
           headers : {
             Authorization : authToken,
@@ -63,7 +63,7 @@ export const AuthProvider = ({children}) => {
   //to fetch all books data from back-end
   const getAllBooks = async() => {
     try{
-      const response = await fetch("https://bookstore-chj2.onrender.com/api/store/book",{
+      const response = await fetch("http://localhost:5000/api/store/book",{
         method : "GET"
       });
 
@@ -83,7 +83,7 @@ export const AuthProvider = ({children}) => {
   const getServices = async() =>{
     try{
 
-      const response = await fetch('https://bookstore-chj2.onrender.com/api/data/service', {
+      const response = await fetch('http://localhost:5000/api/data/service', {
         method : "GET"
       });
 
