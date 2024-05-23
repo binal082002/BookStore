@@ -60,92 +60,74 @@ const Contact = () => {
 
     return (
         <>
-             <section>
-                <main>
-                    <div className = "section-contact">
-                        <div className = "container grid grid-two-cols">
-                            <div className = "contact-img">
-                                <img 
-                                src = "/images/contact.png" 
-                                alt = "Trying to Contact!"
-                                width="500" 
-                                height="500"
-                                />
-                            </div>
-
-                            <div className="section-form">
-                                <h1 className="main-heading">Contact Us</h1>
-                                <br/>
-
-                                <form onSubmit = {handleSubmit}>
-
-                                    <div>
-                                        <label htmlFor="username">username</label>
-                                        <input 
-                                            type="text" 
-                                            name="username"
-                                            placeholder="" 
-                                            id="username"
-                                            required
-                                            autoComplete="off"
-                                            value = {contact.username}
-                                            onChange = {handleInput}
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="email">email</label>
-                                        <input 
-                                            type="email" 
-                                            name="email"
-                                            placeholder="" 
-                                            id="email"
-                                            required
-                                            autoComplete="off"
-                                            value = {contact.email}
-                                            onChange = {handleInput}
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="message">message</label>
-                                        <textarea 
-                                            name="message"
-                                            id="message"
-                                            cols = "30"
-                                            rows =  "6"
-                                            value = {contact.message}
-                                            onChange = {handleInput}
-                                        > </textarea >
-                                    </div>
-
-                                    <br />
-                                    
-                                    <button> Submit </button>
-
-
-                                </form>
-                            </div>
-
-                        </div>
+            <div className = "loginsignup">
+                <div className = "container grid grid-two-cols">
+                    <div className = "contact-img">
+                        <img
+                        src = "/images/contact.png" 
+                        alt = "Trying to Contact!"
+                        width="500" 
+                        height="500"
+                        />
                     </div>
-                </main>
+
+                    <div className="loginsignup-container">
+                        <h1>Contact Us</h1>
+                        
+                        <div className="loginsignup-fields">
+                            {/* <label htmlFor="username">username</label> */}
+                            <input 
+                                type="text" 
+                                name="username"
+                                placeholder="" 
+                                id="username"
+                                required
+                                autoComplete="off"
+                                value = {contact.username}
+                                onChange = {handleInput}
+                            />
+
+                            {/* <label htmlFor="email">email</label> */}
+                            <input 
+                                type="email" 
+                                name="email"
+                                placeholder="" 
+                                id="email"
+                                required
+                                autoComplete="off"
+                                value = {contact.email}
+                                onChange = {handleInput}
+                            />
+
+                            {/* <label htmlFor="message">message</label> */}
+                            <textarea 
+                                name="message"
+                                id="message"
+                                placeholder="Leave your queries here!"
+                                cols = "25"
+                                rows =  "6"
+                                value = {contact.message}
+                                onChange = {handleInput}
+                            > </textarea >
+                        </div>
+                            
+                        <button onClick={handleSubmit}> Submit </button>
+                    </div>
+                </div>
+
+            </div>
+            <br/>
+            <section className = "mb-3">
+                <iframe
+                    src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3667.4973993967487!2d72.62634057509705!3d23.18853697905787!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395c2a3c9618d2c5%3A0xc54de484f986b1fa!2sDA-IICT!5e0!3m2!1sen!2sin!4v1711559050687!5m2!1sen!2sin"
+                    width = "100%"
+                    height = "450"
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
                 
-                <section className = "mb-3">
-                    <iframe
-                        src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3667.4973993967487!2d72.62634057509705!3d23.18853697905787!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395c2a3c9618d2c5%3A0xc54de484f986b1fa!2sDA-IICT!5e0!3m2!1sen!2sin!4v1711559050687!5m2!1sen!2sin"
-                        width = "100%"
-                        height = "450"
-                        allowFullScreen
-                        loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
-                    
-                    ></iframe>
-                </section>
-
-
+                ></iframe>
             </section>
-
         </>
     )
 }

@@ -4,34 +4,32 @@ const About = () => {
   return (
     <>
       <main>
-        <section className="section-hero">
-          <div className="container grid grid-two-cols">
-            <div className="hero-content">
+        <section className="hero">
+            <div className="hero-left">
               {/* <p>We care to cure your Health</p> */}
 
               <h1>Why Choose Us? </h1>
-              <p>
+              <h2 className="h2-last">
                 <strong>Wide Selection:</strong> Explore our vast collection
                   of books covering various genres, from classics to the latest
                   releases.
-              </p>
-
-              <p>
+              </h2>            
+              <h2 className="h2-last">
                 <strong>Expert Recommendations:</strong> Our team of book
                   enthusiasts is here to offer personalized recommendations
                   based on your interests and preferences.
-              </p>
+              </h2>
 
-              <p>
+              <h2 className="h2-last">
                 <strong>Convenience:</strong> Shop anytime, anywhere with our
                   user-friendly app. Discover new reads and manage your
                   purchases with ease.
-              </p>
-              <p>
+              </h2>
+              <h2 className="h2-last">
                 <strong>Community:</strong> Join our thriving reading
                   community. Engage in discussions, participate in book clubs,
                   and connect with fellow book lovers.
-              </p>
+              </h2>
 
               <div className="btn btn-group">
                 <NavLink to="/contact">
@@ -42,7 +40,8 @@ const About = () => {
                 </NavLink>
               </div>
             </div>
-            <div className="hero-image">
+
+            <div className="hero-right">
               <img
                 src="/images/about.png"
                 alt="coding buddies "
@@ -50,7 +49,6 @@ const About = () => {
                 height="500"
               />
             </div>
-          </div>
         </section>
       </main>
 
