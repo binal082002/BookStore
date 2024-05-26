@@ -51,11 +51,12 @@ export const AuthProvider = ({children}) => {
           if(data.userData.isAdmin) setIsAdmin(true);
           else setIsAdmin(false);
         }else {
-          toast.error("Error fetching user data!");
+          // toast.error("Error fetching user data!");
           setIsloading(false);
         }
 
       }catch(err){
+        toast.error("Error fetching user data!");
         console.error("Error fetching user data");
       }
   }
