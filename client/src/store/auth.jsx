@@ -108,7 +108,7 @@ export const AuthProvider = ({children}) => {
     const initialLoad = () => {
       // Clear token from local storage only on initial load
       if (!localStorage.getItem("initialLoadDone")) {
-        clearTokenFromLS();
+        LogoutUser();
         localStorage.setItem("initialLoadDone", "true");
       }
 
@@ -116,23 +116,13 @@ export const AuthProvider = ({children}) => {
       if (token) {
         userAuthentication();
       } else {
-        setIsLoading(false); // Ensure loading state is false if no token
+        setIsloading(false); // Ensure loading state is false if no token
       }
     };
 
     initialLoad();
 
-    const handleBeforeUnload = () => {
-      clearTokenFromLS();
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    // Clean up event listener on component unmount
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, [token]);
+  }, []);
 
   return (
     <AuthContext.Provider value = {{isLoggedIn, isAdmin, storeTokenInLS, LogoutUser, books, user, services, authToken, isLoading}}>
