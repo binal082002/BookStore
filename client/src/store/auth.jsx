@@ -102,8 +102,37 @@ export const AuthProvider = ({children}) => {
   useEffect(() => {
     getAllBooks();
     getServices();
-    userAuthentication()
   }, []);
+
+  useEffect(() => {
+    const initialLoad = () => {
+      // Clear token from local storage only on initial load
+      if (!localStorage.getItem("initialLoadDone")) {
+        clearTokenFromLS();
+        localStorage.setItem("initialLoadDone", "true");
+      }
+
+      // Only authenticate user if a token is present
+      if (token) {
+        userAuthentication();
+      } else {
+        setIsLoading(false); // Ensure loading state is false if no token
+      }
+    };
+
+    initialLoad();
+
+    const handleBeforeUnload = () => {
+      clearTokenFromLS();
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // Clean up event listener on component unmount
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [token]);
 
   return (
     <AuthContext.Provider value = {{isLoggedIn, isAdmin, storeTokenInLS, LogoutUser, books, user, services, authToken, isLoading}}>

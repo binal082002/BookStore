@@ -63,7 +63,7 @@ user_schema.methods.generateToken = async function(){
             }, //when we verify user thrugh the JWT token these 3 data(payload) will be shared!!
             process.env.JWT_SECRET_KEY,
             {
-                expiresIn : "30d",
+                expiresIn : "2h",
             }
         );
     }catch(error){
