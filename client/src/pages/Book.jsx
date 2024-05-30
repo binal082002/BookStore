@@ -34,15 +34,16 @@ const buyBook = (id) => {
         <>
             <section className="section-services">
                 <div className = "container">
-                    <h1 className = "main-heading">Books</h1>
+                    {/* <h1 className = "main-heading">Books</h1> */}
                     <div className="search-panel">
+                        {/* <p className="search-panel-text">Book title here</p> */}
                         <input
                             type="text"
                             value={searchQuery}
                             onChange={handleSearch}
                             placeholder="Search books..."
                         />
-                </div>
+                    </div>
                 </div>
 
                 <div className = "container grid grid-three-cols">
@@ -88,3 +89,5 @@ const buyBook = (id) => {
 }
 
 export default Book;
+
+

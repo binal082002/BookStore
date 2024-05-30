@@ -82,7 +82,7 @@ const AdminUsers = () =>{
                                         <td>{curUser.username}</td>
                                         <td>{curUser.email}</td>
                                         <td>{curUser.phone}</td>
-                                        <td><Link to = {`/admin/users/${curUser._id}/edit`}>Edit</Link></td>
+                                        <td><Link to = {`/admin/users/${curUser._id}/edit`} className="link-button" >Edit</Link></td>
                                         <td><button onClick={() => deleteUser(curUser._id)}> Delete </button></td>
                                     </tr>
                                 })
