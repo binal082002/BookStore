@@ -45,7 +45,7 @@ const verification = async(req,res) => {
             });
 
             res.redirect(
-            `http://ecommbookstore.netlify.app/paymentsuccess?reference=${razorpay_payment_id}`
+            `https://ecommbookstore.netlify.app/paymentsuccess?reference=${razorpay_payment_id}`
             );
         }
 
