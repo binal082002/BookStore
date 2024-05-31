@@ -11,6 +11,8 @@ The application seamlessly integrates back-end and front-end components using th
 - Password encryption
 - Intuitive interface for browsing and searching books
 - Order details verification before confirmation
+- Razorpay payment gateway integration
+- After successful payment, the order status is updated to "Confirm."
 - Reviewing personal orders
 - Admin Panel with singular access
   - Update/Delete user data
