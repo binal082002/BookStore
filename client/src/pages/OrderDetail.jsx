@@ -184,8 +184,7 @@
 
 // export default Order;
 
-
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../store/auth";
 import { toast } from "react-toastify";
@@ -198,37 +197,38 @@ const Order = () => {
   const [book, setBook] = useState({});
   const [showPayButton, setShowPayButton] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const {authToken} = useAuth();
 
   const params = useParams();
-  const { authToken } = useAuth();
 
-  // Get single user data
-  const getBookData = async () => {
-    try {
-      const response = await fetch(
-        `https://bookstore-fd4d.onrender.com/api/store/book/${params.id}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: authToken,
-          },
-        }
-      );
-
-      const res_data = await response.json();
-      setBook(res_data.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
+  // Get single book data
+  // Get single book data
   useEffect(() => {
+    const getBookData = async () => {
+      try {
+        const response = await fetch(
+          `https://bookstore-fd4d.onrender.com/api/store/book/${params.id}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: authToken,
+            },
+          }
+        );
+
+        const res_data = await response.json();
+        setBook(res_data.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
     getBookData();
   }, []);
 
-  // To display updated data
+  // To create and save order
   const handleSubmit = async (e) => {
-    e.preventDefault(); // prevent default form submission behavior
+    e.preventDefault();
 
     const order = {
       user: user._id,
@@ -250,13 +250,15 @@ const Order = () => {
         }
       );
 
+      const res = await response.json();
+
       if (response.ok) {
+        // setOrderId(res.order._id); // Update order ID
+        localStorage.setItem("orderId", res.order._id); // Store order ID in local storage
+
+        setShowPayButton(true);
+        setModalIsOpen(true);
         toast.success("Order saved successfully!");
-        // setOrderId(response._id)
-        const res = await response.json();
-        console.log("order detail", res);
-        setShowPayButton(true); // Show the Pay button
-        setModalIsOpen(true); // Show the modal
       } else {
         toast.error("Order not confirmed!");
       }
@@ -265,51 +267,53 @@ const Order = () => {
     }
   };
 
+  // Handle payment
   const handlePay = async (e) => {
-    e.preventDefault(); // prevent default form submission behavior
+    e.preventDefault();
 
     const totalAmount = book.price; // ensure totalAmount is defined
     try {
-      const response = await fetch("http://localhost:5000/api/payment/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: totalAmount }),
-      });
+          const response = await fetch("http://localhost:5000/api/payment/checkout",
+              {
+                  method: "POST",
+                  headers : { "Content-Type" : "application/json"},                
+                  body: JSON.stringify({amount : totalAmount})
+          })
 
-      const key_res = await fetch("http://localhost:5000/api/key", {
-        method: "GET",
-      });
+          const key_res = await fetch("http://localhost:5000/api/key",{
+              method : "GET"
+          });
 
-      const { key_id } = await key_res.json();
-      // console.log(key_id);
+          const {key_id} = await key_res.json();
+          // console.log(key_id);
 
-      const res = await response.json();
-      // console.log(user.phone);
+          const res = await response.json();
+          // console.log(user.phone);
 
-      var options = {
-        key: key_id, // Enter the Key ID generated from the Dashboard
-        amount: res.order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-        currency: "INR",
-        name: "Binal",
-        description: "Test Transaction",
-        image: "/images/logo.png",
-        order_id: res.order.id, // This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-        callback_url: "http://localhost:5000/api/payment/verification",
-        prefill: {
-          name: user.username,
-          email: user.email,
-          contact: user.phone,
-        },
-        notes: {
-          address: "Razorpay Corporate Office",
-        },
-        theme: {
-          color: "#671b7d", // rgb(102, 6, 147),
-        },
-      };
+          var options = {
+              key: key_id, // Enter the Key ID generated from the Dashboard
+              amount: res.order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+              currency: "INR",
+              name: "Binal",
+              description: "Test Transaction",
+              image: "/images/logo.png",
+              order_id: res.order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+              callback_url: "http://localhost:5000/api/payment/verification",
+              prefill: {
+                  name: user.username,
+                  email: user.email,
+                  contact: user.phone
+              },
+              notes: {
+                  "address": "Razorpay Corporate Office"
+              },
+              theme: {
+                  "color": "#671b7d" //rgb(102, 6, 147),
+              }
+          };
 
-      var rzp1 = new window.Razorpay(options);
-      rzp1.open();
+          var rzp1 = new window.Razorpay(options);
+          rzp1.open();
     } catch (err) {
       toast.error("Payment Unsuccessful!!");
       console.log("Error in payment!!");
@@ -401,3 +405,4 @@ const Order = () => {
 };
 
 export default Order;
+

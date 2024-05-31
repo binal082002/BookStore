@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect} from "react";
+import { createContext, useContext, useState, useEffect, useRef} from "react";
 import { toast } from "react-toastify";
 
 //1. context
@@ -13,7 +13,6 @@ export const AuthProvider = ({children}) => {
   const [isLoading, setIsloading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [services, setServices] = useState([]);
-  const [orderId, setOrderId] = useState("");
 
   const authToken = `Bearer ${token}`
 
@@ -127,7 +126,7 @@ export const AuthProvider = ({children}) => {
   }, []);
 
   return (
-    <AuthContext.Provider value = {{setOrderId, isLoggedIn, isAdmin, storeTokenInLS, LogoutUser, books, user, services, authToken, isLoading}}>
+    <AuthContext.Provider value = {{isLoggedIn, isAdmin, storeTokenInLS, LogoutUser, books, user, services, authToken, isLoading}}>
       {children}
     </AuthContext.Provider>
   );
