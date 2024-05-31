@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const Book = () => {
 
-    const {books, isLoggedIn} = useAuth();
+    const {user, books, isLoggedIn} = useAuth();
     const navigate = useNavigate();
 
 
@@ -21,7 +21,7 @@ const Book = () => {
     book.title.toLowerCase().includes(searchQuery.toLowerCase())
 );
 
-const buyBook = (id) => {
+const buyBook = async(id, price) => {
         if(!isLoggedIn){
             toast.error("Login first!!");
             return navigate("/login");
@@ -70,8 +70,8 @@ const buyBook = (id) => {
                                 {/* </div> */}
 
                                 <div className = "grid grid-two-cols">
-                                        <p>{price}$</p>
-                                        <button className = "btn" onClick={() => buyBook(curBook._id)}> Buy </button>                                
+                                        <p>{price}₹</p>
+                                        <button className = "btn" onClick={() => buyBook(curBook._id, price)}> Buy </button>                                
 
                                 </div>
                             </div>
@@ -89,5 +89,3 @@ const buyBook = (id) => {
 }
 
 export default Book;
-
-

@@ -20,6 +20,7 @@ import AdminAddBook from "./pages/Admin-Book";
 import AdminUpdate from "./pages/Admin-Update";
 import OrderDetail from "./pages/OrderDetail";
 import MyOrder from "./pages/MyOrder";
+import Payment_success from "./pages/Payment_success";
 
 const App = () => {
   return(
@@ -37,6 +38,7 @@ const App = () => {
         <Route path = "/logout" element = {<Logout />} />
         <Route path = "/order/:id" element = {<OrderDetail />} />
         <Route path = "/Myorder/:id/detail" element = {<MyOrder />} />
+        <Route path = "/paymentsuccess" element = {<Payment_success />} />
 
         <Route path = "*" element = {<Error />} />
 

@@ -12,6 +12,9 @@ const service_route = require("./router/service-router");
 const adminRoute = require("./router/admin-router");
 const bookRoute = require("./router/book-router");
 const order_route = require("./router/order-router");
+const payment_route = require("./router/payment_route");
+
+const bodyParser = require("body-parser"); // Import body-parser
 
 const corsOptions = {
     origin:  "http://localhost:5173",
@@ -21,6 +24,7 @@ const corsOptions = {
 
 app.use(cors());//we need to define it before fetching the data
 app.use(express.json());//Middleware to use json in this file
+app.use(bodyParser.urlencoded({ extended: true })); // Middleware to parse URL-encoded bodies
 
 app.use("/api/auth", authRoute); //it direct to auth-router.js file.
 app.use("/api/form",contact_route);
@@ -33,6 +37,14 @@ app.use("/api/admin", adminRoute);
 
 app.use(errorMiddleware);
 
+const instance = require("./razorpay_instance");
+
+app.use("/api/payment", payment_route);
+
+app.get("/api/key", (req,res)=>{
+    res.status(200).json({key_id : process.env.RAZORPAY_KEY_ID});
+})
+
 const PORT = process.env.PORT || 5000;
 
 connectDB().then(() => {
@@ -42,6 +54,8 @@ connectDB().then(() => {
 })
 
 });
+
+module.exports = instance;
 
 
 // app.get("/",(req, res) => {
