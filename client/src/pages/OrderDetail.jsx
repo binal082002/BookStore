@@ -273,14 +273,14 @@ const Order = () => {
 
     const totalAmount = book.price; // ensure totalAmount is defined
     try {
-          const response = await fetch("http://localhost:5000/api/payment/checkout",
+          const response = await fetch("http://bookstore-fd4d.onrender.com/api/payment/checkout",
               {
                   method: "POST",
                   headers : { "Content-Type" : "application/json"},                
                   body: JSON.stringify({amount : totalAmount})
           })
 
-          const key_res = await fetch("http://localhost:5000/api/key",{
+          const key_res = await fetch("http://bookstore-fd4d.onrender.com/api/key",{
               method : "GET"
           });
 
@@ -298,7 +298,7 @@ const Order = () => {
               description: "Test Transaction",
               image: "/images/logo.png",
               order_id: res.order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-              callback_url: "http://localhost:5000/api/payment/verification",
+              callback_url: "http://bookstore-fd4d.onrender.com/api/payment/verification",
               prefill: {
                   name: user.username,
                   email: user.email,

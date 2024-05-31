@@ -12,7 +12,7 @@ const Payment_success = () => {
     const updateOrderStatus = async() => {
 
         try{
-            const response = await fetch(`http://localhost:5000/api/create/order/update/${id}`,{
+            const response = await fetch(`http://bookstore-fd4d.onrender.com/api/create/order/update/${id}`,{
                 method : "PATCH",
             })
 
