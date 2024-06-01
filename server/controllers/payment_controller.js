@@ -5,8 +5,9 @@ const Payment = require("../models/payment-model");
 const checkout = async (req, res) => {
     try {
         const {amount} = req.body;
+        const final_amount = Number(amount) * 100;
         const options = {
-            amount: Number(amount*100),
+            amount: Number(final_amount*100),
             currency: "INR",
         };
 
