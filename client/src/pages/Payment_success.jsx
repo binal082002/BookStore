@@ -62,7 +62,7 @@ const Payment_success = () => {
 
     useEffect(() => {
         if (id) {
-            // updateOrderStatus();
+            updateOrderStatus();
             singleorderDetail();
             localStorage.removeItem("orderId");
         }

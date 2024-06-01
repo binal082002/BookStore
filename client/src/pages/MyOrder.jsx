@@ -24,7 +24,7 @@ const MyOrder = () =>{
             });
 
             const res_data = await response.json();
-            // console.log(res_data.data);
+            console.log(res_data.data);
             setOrders(res_data.data);
 
         }catch(err){
@@ -61,7 +61,7 @@ const MyOrder = () =>{
                 const bookPromises = orders.map(order => getBookData(order.book));
                 const resolvedBook = await Promise.all(bookPromises);
                 setBook(resolvedBook);
-                // console.log(resolvedBook);
+                console.log("resolved book", resolvedBook);
 
             } catch(error)
             {
