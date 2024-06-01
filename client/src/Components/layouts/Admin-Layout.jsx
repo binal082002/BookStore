@@ -37,7 +37,7 @@ const AdminLayout = () =>{
 
                             <li>
                                 <NavLink to = "/admin/contacts">
-                                    <FaMessage /> contacts
+                                    <FaMessage /> Contacts
                                 </NavLink>
                             </li>
 
