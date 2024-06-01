@@ -12,6 +12,17 @@ const createOrder = async(req,res) => {
     }
 } 
 
+const getOrderById = async(req,res) => {
+    try{
+        const id = req.params.id;        
+        const response = await Order.findOne({_id : id});
+        console.log(response);
+        res.status(200).json({order : response});
+    }catch(err){
+        res.status(500).json({message : "Order not found!!"});
+    }
+} 
+
 const updateOrderById = async (req, res) => {
     try {
         const id = req.params.id;
@@ -31,4 +42,4 @@ const updateOrderById = async (req, res) => {
 };
 
 
-module.exports = {createOrder, updateOrderById};
+module.exports = {createOrder, updateOrderById, getOrderById};
