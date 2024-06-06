@@ -1,7 +1,7 @@
 # Bookstore E-commerce Project
 Website Link: https://ecommbookstore.netlify.app 
 
-An **AMERN-based** E-commerce platform designed to help bookstores run their online business more efficiently. This application provides a seamless and straightforward user experience for browsing and purchasing books, with secure user authentication to ensure authorized access. The admin panel offers effective management features, giving administrators control over various aspects of the bookstore’s operations, including adding new books and tracking orders.
+The **MERN-based** e-commerce platform is designed to help bookstores run their online business more efficiently by offering a seamless and straightforward user experience for browsing and purchasing books, with secure user authentication to ensure authorized access. The integrated Razorpay payment gateway ensures secure transactions, automatically adjusting order status and book stock in the database upon successful payment. Administrators benefit from an effective management panel that allows control over various operations, including adding new books and tracking orders, ensuring comprehensive and streamlined management of the bookstore's online operations.
 
 The application seamlessly integrates back-end and front-end components using the **MERN stack**, delivering a unified and responsive user experience. **MongoDB Atlas** ensures reliable and scalable data storage, while **NodeJS** and **ExpressJS** enable a robust back-end architecture for handling authentication, data management, and order processing. On the front end, **ReactJS** enhances user engagement with a dynamic and interactive interface, facilitating an easy browsing and shopping experience.
 
@@ -12,7 +12,7 @@ The application seamlessly integrates back-end and front-end components using th
 - Intuitive interface for browsing and searching books
 - Order details verification before confirmation
 - Razorpay payment gateway integration
-- After successful payment, the order status is updated to "Confirm."
+- After successful payment, the order status is updated to "Confirm" and the book stock is adjusted.
 - Reviewing personal orders
 - Admin Panel with singular access
   - Update/Delete user data
