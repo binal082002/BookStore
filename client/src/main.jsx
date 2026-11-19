@@ -23,6 +23,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         theme='colored'
         bodyClassName="toastBody"
       />
-    </React.StrictMode>,
+    </React.StrictMode>
   </AuthProvider>
 )

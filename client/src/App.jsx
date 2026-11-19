@@ -1,17 +1,17 @@
-import {BrowserRouter, Routes, Route} from "react-router-dom";
-import Home from "./pages/Home"
-import About from "./pages/About"
-import Contact from "./pages/Contact"
-import Register from "./pages/Register"
-import Service from "./pages/Service"
-import Login from "./pages/Login"
-import Logout from "./pages/Logout"
-import Book from "./pages/Book"
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Register from "./pages/Register";
+import Service from "./pages/Service";
+import Login from "./pages/Login";
+import Logout from "./pages/Logout";
+import Book from "./pages/Book";
 
-import Error from "./pages/Error"
+import Error from "./pages/Error";
 
-import Navbar from "./Components/Navbar"
-import Footer from "./Components/Footer/Footer"
+import Navbar from "./Components/Navbar";
+import Footer from "./Components/Footer/Footer";
 import AdminLayout from "./Components/layouts/Admin-Layout";
 import AdminUsers from "./pages/Admin-Users";
 import AdminContacts from "./pages/Admin-Contacts";
@@ -20,45 +20,44 @@ import AdminAddBook from "./pages/Admin-Book";
 import AdminUpdate from "./pages/Admin-Update";
 import OrderDetail from "./pages/OrderDetail";
 import MyOrder from "./pages/MyOrder";
-import Payment_success from "./pages/Payment_success";
+import AdminBooks from "./pages/AdminBooks";
+import AdminEditBook from "./pages/AdminEditBook";
 
 const App = () => {
-  return(
-  <>
-    <BrowserRouter>
-      <Navbar />
-      <Routes>
-        <Route path = "/" element = {<Home />} />
-        <Route path = "/about" element = {<About />} />
-        <Route path = "/book" element = {<Book />} />
-        <Route path = "/contact" element = {<Contact/>} />
-        <Route path = "/register" element = {<Register />} />
-        <Route path = "/service" element = {<Service />} />
-        <Route path = "/login" element = {<Login />} />
-        <Route path = "/logout" element = {<Logout />} />
-        <Route path = "/order/:id" element = {<OrderDetail />} />
-        <Route path = "/Myorder/:id/detail" element = {<MyOrder />} />
-        <Route path = "/paymentsuccess" element = {<Payment_success />} />
+  return (
+    <>
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/book" element={<Book />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/service" element={<Service />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/logout" element={<Logout />} />
+          <Route path="/order/:id" element={<OrderDetail />} />
+          <Route path="/Myorder/:id/detail" element={<MyOrder />} />
 
-        <Route path = "*" element = {<Error />} />
+          <Route path="*" element={<Error />} />
 
-        <Route path = "/admin" element = {<AdminLayout/>}>
-          <Route path = "users" element = {<AdminUsers />}/>
-          <Route path = "contacts" element = {<AdminContacts/>}/>
-          <Route path = "orders" element = {<AdminOrders/>}/>
-          <Route path = "users/:id/edit" element = {<AdminUpdate/>}/>
-          <Route path = "add/book" element = {<AdminAddBook/>}/>
-        </Route>  
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="contacts" element={<AdminContacts />} />
+            <Route path="orders" element={<AdminOrders />} />
+            <Route path="users/:id/edit" element={<AdminUpdate />} />
+            <Route path="add/book" element={<AdminAddBook />} />
+            <Route path="books" element={<AdminBooks />} />
+            <Route path="books/:id/edit" element={<AdminEditBook />} />
+            <Route path="/admin" element={<AdminLayout />}></Route>
+          </Route>
+        </Routes>
 
-      </Routes>
-    </BrowserRouter>
-
-    {/* <Footer /> */}
-
-     
-  </>
-);
-
-}
+        <Footer />
+      </BrowserRouter>
+    </>
+  );
+};
 
 export default App;

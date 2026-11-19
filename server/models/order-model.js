@@ -25,7 +25,11 @@ const order_schema = new mongoose.Schema({
         type: String,
         enum: ["Pending", "Completed", "Cancelled"],
         default: "Pending"
-    }
+    },
+    razorpayOrderId: {
+        type: String,
+        default: null,
+    },
 });
 
 const Order = mongoose.model("Order", order_schema);

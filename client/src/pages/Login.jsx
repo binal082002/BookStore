@@ -1,195 +1,182 @@
+
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import {useAuth} from "../store/auth"
-import {toast}  from "react-toastify"
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../store/auth";
+import { toast } from "react-toastify";
+import API_BASE_URL from "../utils/api";
 
 const Login = () => {
-    const [user, setUser] = useState({
-        email : "",
-        password : ""
-    });
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+  });
 
-    const navigate = useNavigate();
-    const {storeTokenInLS} = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleInput = (e) => {
-        let name = e.target.name;
-        let value = e.target.value;
+  const navigate = useNavigate();
+  const { storeTokenInLS } = useAuth();
 
-        setUser({
-            ...user,
-            [name] : value
-        })
+  const handleInput = (e) => {
+    const { name, value } = e.target;
+
+    setUser((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!user.email.trim() || !user.password) {
+      toast.error("Please enter your email and password.");
+      return;
     }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        // console.log(user);
+    try {
+      setIsSubmitting(true);
 
-        try {
-            const response = await fetch('https://bookstore-fd4d.onrender.com/api/auth/login', {
-            method : "POST",
-            headers : { "Content-Type" : "application/json"},
-            body : JSON.stringify(user)
-            });
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: user.email.trim(),
+          password: user.password,
+        }),
+      });
 
-            const res_data = await response.json(); //response will contain the data we passed in "res" through logic part of registration 
-            // console.log("login-server data : ", res_data);
-            if(response.ok){
-                storeTokenInLS(res_data.token);
-                // localStorage.setItem("Token" , res_data.token);
+      const resData = await response.json();
 
-                
-                toast.success("Login Successful!");
-                setUser({email : "", password : ""});
-                navigate("/"); //navigate to login page
+      if (!response.ok) {
+        throw new Error(
+          resData.extraDetails || resData.message || "Login failed."
+        );
+      }
 
-            }else {
-                toast.error(res_data.extraDetails ?  res_data.extraDetails : res_data.message);
-                // console.log("Invalid Credentials!");
-            }
+      if (!resData.token) {
+        throw new Error("Login response did not contain an authentication token.");
+      }
 
-        }catch(err){
-            console.log(err);
-        }
+      storeTokenInLS(resData.token);
 
+      toast.success("Login successful!");
+      setUser({ email: "", password: "" });
+      navigate("/");
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error(error.message || "Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
+  };
 
+  return (
+    <main className="min-h-screen bg-[#fffdf9]">
+      <section className="mx-auto grid max-w-7xl items-center gap-12 px-6 py-16 sm:px-10 lg:grid-cols-2 lg:gap-20">
 
-    return (
-        <>
-            <div className = "loginsignup">
-                    <div className="container grid grid-two-cols">
-                        <div className = "registration-image">
-                            <img 
-                            src = "/images/login.png" 
-                            alt = "Trying to login!"
-                            width="500" 
-                            height="500"
-                            />
-                        </div>
+        {/* Illustration */}
+        <div className="flex justify-center">
+          <img
+            src="/images/login.png"
+            alt="Login to your BookShelf account"
+            className="w-full max-w-md object-contain"
+          />
+        </div>
 
-                        <div className = "loginsignup-container">
-                            <h1>Login</h1>
+        {/* Login Form */}
+        <div className="mx-auto w-full max-w-md rounded-2xl border border-stone-200 bg-white p-7 shadow-sm sm:p-10">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-widest text-[#684477]">
+              Welcome Back
+            </p>
 
-                            <div className="loginsignup-fields">
-                                {/* <label htmlFor="email">Email</label> */}
-                                <input 
-                                    type="email" 
-                                    name="email"
-                                    placeholder="Enter your email" 
-                                    id="email"
-                                    required
-                                    autoComplete="off"
-                                    value = {user.email}
-                                    onChange = {handleInput}
-                                />
+            <h1 className="mt-3 text-3xl font-bold text-stone-900">
+              Login to BookShelf
+            </h1>
 
-                                    
-                                {/* <label htmlFor="password">password</label> */}
-                                <input 
-                                    type="password" 
-                                    name="password"
-                                    placeholder="password" 
-                                    id="password"
-                                    required
-                                    autoComplete="off"
-                                    value = {user.password}
-                                    onChange = {handleInput}
-                                />
+            <p className="mt-3 text-sm leading-6 text-stone-500">
+              Sign in to explore books and manage your orders.
+            </p>
+          </div>
 
-                            </div>
+          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+            <div>
+              <label
+                htmlFor="email"
+                className="mb-2 block text-sm font-semibold text-stone-700"
+              >
+                Email address
+              </label>
 
-                            <button onClick={handleSubmit}> Login Now </button>
-                        </div>
-                    </div>            
-                </div>
-        </>
-    )
-}
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={user.email}
+                onChange={handleInput}
+                placeholder="you@example.com"
+                autoComplete="email"
+                required
+                className="w-full rounded-xl border border-stone-200 px-4 py-3 text-stone-800 outline-none transition placeholder:text-stone-400 focus:border-[#684477] focus:ring-2 focus:ring-[#684477]/10"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="password"
+                className="mb-2 block text-sm font-semibold text-stone-700"
+              >
+                Password
+              </label>
+
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  name="password"
+                  value={user.password}
+                  onChange={handleInput}
+                  placeholder="Enter your password"
+                  autoComplete="current-password"
+                  required
+                  className="w-full rounded-xl border border-stone-200 px-4 py-3 pr-20 text-stone-800 outline-none transition placeholder:text-stone-400 focus:border-[#684477] focus:ring-2 focus:ring-[#684477]/10"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-[#684477] hover:text-[#543563]"
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full rounded-xl bg-[#684477] px-6 py-3.5 font-semibold text-white transition hover:bg-[#543563] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isSubmitting ? "Signing in..." : "Login"}
+            </button>
+          </form>
+
+          <p className="mt-7 text-center text-sm text-stone-600">
+            Don't have an account?{" "}
+            <Link
+              to="/register"
+              className="font-semibold text-[#684477] hover:underline"
+            >
+              Create an account
+            </Link>
+          </p>
+        </div>
+      </section>
+    </main>
+  );
+};
 
 export default Login;
-
-
-
-// import React, { useState } from 'react'
-// import './CSS/LoginSignup.css'
-
-// export const LoginSignup = () => {
-
-//   const [state,setState] = useState("Login");
-//   const [formData,setFormData] = useState({
-//     username:"",
-//     password:"",
-//     email:""
-//   })
-  
-//   const changeHandler = (e)=>{
-//     setFormData({...formData,[e.target.name]:e.target.value})
-//   }
-
-
-
-//   const login =async ()=>{
-//     console.log("Login Function Executed",formData);
-//     let responseData;
-//     // await fetch('http://localhost:4000/login',{
-//     //   method:'POST',
-//     //   headers:{
-//     //     Accept:'application/formData',
-//     //     'Content-type':'application/json',
-//     //   },
-//     //   body:JSON.stringify(formData),
-//     // }).then((response)=>response.json()).then((data)=>responseData=data)
-
-//     if(responseData.success){
-//       localStorage.setItem('auth-token',responseData.token);
-//       window.location.replace("/");
-//     }
-//     else{
-//       alert(responseData.errors)
-//     }
-//   }
-//   const signup =async ()=>{
-//     console.log("Sign Up Function Executed",formData);
-//     let responseData;
-//     // await fetch('http://localhost:4000/signup',{
-//     //   method:'POST',
-//     //   headers:{
-//     //     Accept:'application/formData',
-//     //     'Content-type':'application/json',
-//     //   },
-//     //   body:JSON.stringify(formData),
-//     // }).then((response)=>response.json()).then((data)=>responseData=data)
-
-//     if(responseData.success){
-//       localStorage.setItem('auth-token',responseData.token);
-//       window.location.replace("/");
-//     }
-//     else{
-//       alert(responseData.errors)
-//     }
-//   }
-
-//   return (
-//     <div className='loginsignup'>
-//       <div className="loginsignup-container">
-//         <h1>{state}</h1>
-//         <div className="loginsignup-fields">
-//           {state==="Sign Up"?<input name='username' value={formData.username} onChange={changeHandler} type="text" placeholder='Your Name'/>:<></>}
-//           <input name='email' value={formData.email} onChange={changeHandler} type="email" placeholder='Your Email'/>
-//           <input name='password' value={formData.password} onChange={changeHandler} type="password" placeholder='Password'/>
-//         </div>
-//         <div className="loginsignup-agree">
-//           <input type="checkbox" name='' id=''/>
-//           <p>By continuing I agree to the T&C and Privacy Policy</p>
-//         </div>
-//         <button onClick={()=>{state==="Login"?login():signup()}}>Continue</button>
-//         {state==="Sign Up"?
-//         <p className="loginsignup-login">Already Have an account?  <span onClick={()=>{setState("Login")}}>Login Here</span></p>:
-//         <p className="loginsignup-login">Create an account?  <span onClick={()=>{setState("Sign Up")}}>Click Here</span></p>}
-//       </div>
-//     </div>
-//   )
-// }
-// export default LoginSignup

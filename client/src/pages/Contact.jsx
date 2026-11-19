@@ -1,268 +1,200 @@
-import { useState } from "react";
-import {useAuth} from "../store/auth";
+
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useAuth } from "../store/auth";
+import API_BASE_URL from "../utils/api";
+
+const defaultContactForm = {
+  username: "",
+  email: "",
+  message: "",
+};
 
 const Contact = () => {
+  const { user } = useAuth();
+  const [contact, setContact] = useState(defaultContactForm);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const defaultContactForm = {
-        username : "",
-        email : "",
-        message : ""
-    };
+  // Prefill user details when logged in
+  useEffect(() => {
+    if (user) {
+      setContact((prev) => ({
+        ...prev,
+        username: user.username || "",
+        email: user.email || "",
+      }));
+    }
+  }, [user]);
 
-    const [contact , setContact] = useState(defaultContactForm);
+  const handleInput = (e) => {
+    const { name, value } = e.target;
 
-    const [userData, setUserData] = useState(true)
-    const {user} = useAuth();
+    setContact((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
-    if(userData && user){
-        setContact({
-            username : user.username,
-            email : user.email,
-            message : "",
-        })
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        setUserData(false);
+    if (!contact.username.trim() || !contact.email.trim() || !contact.message.trim()) {
+      toast.error("Please fill in all fields.");
+      return;
     }
 
-    const handleInput = (e) =>{
-        const name = e.target.name;
-        const value = e.target.value;
+    try {
+      setIsSubmitting(true);
 
-        setContact({
-            ...contact,
-            [name] : value,
-        });
+      const response = await fetch(`${API_BASE_URL}/api/form/contact`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(contact),
+      });
+
+      if (!response.ok) {
+        throw new Error("Unable to submit your message.");
+      }
+
+      setContact({
+        ...defaultContactForm,
+        username: user?.username || "",
+        email: user?.email || "",
+      });
+
+      toast.success("Your message has been sent successfully!");
+    } catch (error) {
+      console.error("Contact form error:", error);
+      toast.error(error.message || "Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
+  };
 
-    const handleSubmit = async (e) =>{
-        e.preventDefault();
-        
-        try{
+  return (
+    <main className="min-h-screen bg-[#fffdf9]">
 
-            const response = await fetch('https://bookstore-fd4d.onrender.com/api/form/contact', {
-                method : "POST",
-                headers : { "Content-Type" : "application/json"},
-                body : JSON.stringify(contact),
-            })
+      {/* Page heading */}
+      <section className="bg-gradient-to-br from-[#f8eafa] via-[#fff9fc] to-[#f5f0fa]">
+        <div className="mx-auto max-w-7xl px-6 py-14 sm:px-10">
+          <p className="text-sm font-semibold uppercase tracking-widest text-[#684477]">
+            WE'RE HERE TO HELP
+          </p>
 
-            if(response.ok){
-                // const res_data = await response.json();
-                setContact(defaultContactForm);
-                // console.log("contact page" , res_data)
-                toast.success("Message saved successfully!!");
-            }
+          <h1 className="mt-3 text-4xl font-bold text-stone-900 sm:text-5xl">
+            Get in Touch
+          </h1>
 
-        }catch(err){
-            console.error(err);
-        }
-    }
+          <p className="mt-4 max-w-2xl text-lg leading-8 text-stone-600">
+            Have a question about a book, an order, or our collection?
+            Send us a message and we'll be happy to hear from you.
+          </p>
+        </div>
+      </section>
 
-    return (
-        <>
-            <div className = "loginsignup">
-                <div className = "container grid grid-two-cols">
-                    <div className = "contact-img">
-                        <img
-                        src = "/images/contact.png" 
-                        alt = "Trying to Contact!"
-                        width="500" 
-                        height="500"
-                        />
-                    </div>
+      {/* Contact form */}
+      <section className="mx-auto grid max-w-7xl items-center gap-12 px-6 py-16 sm:px-10 lg:grid-cols-2 lg:gap-20">
 
-                    <div className="loginsignup-container">
-                        <h1>Contact Us</h1>
-                        
-                        <div className="loginsignup-fields">
-                            {/* <label htmlFor="username">username</label> */}
-                            <input 
-                                type="text" 
-                                name="username"
-                                placeholder="" 
-                                id="username"
-                                required
-                                autoComplete="off"
-                                value = {contact.username}
-                                onChange = {handleInput}
-                            />
+        {/* Illustration */}
+        <div className="flex justify-center">
+          <img
+            src="/images/contact.png"
+            alt="Contact BookShelf"
+            loading="lazy"
+            className="w-full max-w-md object-contain"
+          />
+        </div>
 
-                            {/* <label htmlFor="email">email</label> */}
-                            <input 
-                                type="email" 
-                                name="email"
-                                placeholder="" 
-                                id="email"
-                                required
-                                autoComplete="off"
-                                value = {contact.email}
-                                onChange = {handleInput}
-                            />
+        {/* Form */}
+        <div className="w-full rounded-2xl border border-stone-200 bg-white p-7 shadow-sm sm:p-10">
 
-                            {/* <label htmlFor="message">message</label> */}
-                            <textarea 
-                                name="message"
-                                id="message"
-                                placeholder="Leave your queries here!"
-                                cols = "25"
-                                rows =  "6"
-                                value = {contact.message}
-                                onChange = {handleInput}
-                            > </textarea >
-                        </div>
-                            
-                        <button onClick={handleSubmit}> Submit </button>
-                    </div>
-                </div>
+          <h2 className="text-2xl font-bold text-stone-900">
+            Send us a message
+          </h2>
 
+          <p className="mt-2 text-sm leading-6 text-stone-500">
+            Fill out the form below and let us know how we can help.
+          </p>
+
+          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+
+            <div>
+              <label
+                htmlFor="username"
+                className="mb-2 block text-sm font-semibold text-stone-700"
+              >
+                Your name
+              </label>
+
+              <input
+                type="text"
+                id="username"
+                name="username"
+                value={contact.username}
+                onChange={handleInput}
+                placeholder="Enter your name"
+                autoComplete="name"
+                required
+                className="w-full rounded-xl border border-stone-200 px-4 py-3 text-stone-800 outline-none transition placeholder:text-stone-400 focus:border-[#684477] focus:ring-2 focus:ring-[#684477]/10"
+              />
             </div>
-            <br/>
-            <section className = "mb-3">
-                <iframe
-                    src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3667.4973993967487!2d72.62634057509705!3d23.18853697905787!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395c2a3c9618d2c5%3A0xc54de484f986b1fa!2sDA-IICT!5e0!3m2!1sen!2sin!4v1711559050687!5m2!1sen!2sin"
-                    width = "100%"
-                    height = "450"
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                
-                ></iframe>
-            </section>
-        </>
-    )
-}
+
+            <div>
+              <label
+                htmlFor="email"
+                className="mb-2 block text-sm font-semibold text-stone-700"
+              >
+                Email address
+              </label>
+
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={contact.email}
+                onChange={handleInput}
+                placeholder="you@example.com"
+                autoComplete="email"
+                required
+                className="w-full rounded-xl border border-stone-200 px-4 py-3 text-stone-800 outline-none transition placeholder:text-stone-400 focus:border-[#684477] focus:ring-2 focus:ring-[#684477]/10"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="message"
+                className="mb-2 block text-sm font-semibold text-stone-700"
+              >
+                Your message
+              </label>
+
+              <textarea
+                id="message"
+                name="message"
+                value={contact.message}
+                onChange={handleInput}
+                placeholder="Tell us how we can help..."
+                rows={5}
+                required
+                className="w-full resize-y rounded-xl border border-stone-200 px-4 py-3 text-stone-800 outline-none transition placeholder:text-stone-400 focus:border-[#684477] focus:ring-2 focus:ring-[#684477]/10"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full rounded-xl bg-[#684477] px-6 py-3.5 font-semibold text-white transition hover:bg-[#543563] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isSubmitting ? "Sending..." : "Send Message →"}
+            </button>
+
+          </form>
+        </div>
+      </section>
+    </main>
+  );
+};
 
 export default Contact;
-
-// import { useState } from "react";
-// import { useAuth } from "../store/auth";
-
-// const defaultContactFormData = {
-//   username: "",
-//   email: "",
-//   message: "",
-// };
-
-// // type UserAuth = boolean;
-// const Contact = () => {
-//   const [data, setData] = useState(defaultContactFormData);
-
-//   const { user } = useAuth();
-
-//   console.log("frontend user ", user.email);
-
-//   const [userData, setUserData] = useState(true);
-
-//   if (userData && user) {
-//     setData({
-//       username: user.username,
-//       email: user.email,
-//       message: "",
-//     });
-//     setUserData(false);
-//   }
-
-//   const handleInput = (e) => {
-//     // console.log(e);
-//     const name = e.target.name;
-//     const value = e.target.value;
-//     setData((prev) => ({ ...prev, [name]: value }));
-//   };
-
-//   const handleContactForm = async (e) => {
-//     e.preventDefault();
-//   };
-
-//   return (
-//             <>
-//                  <section>
-//                     <main>
-//                         <div className = "section-contact">
-//                             <div className = "container grid grid-two-cols">
-//                                 <div className = "contact-img">
-//                                     <img 
-//                                     src = "/images/contact.png" 
-//                                     alt = "Trying to Contact!"
-//                                     width="500" 
-//                                     height="500"
-//                                     />
-//                                 </div>
-    
-//                                 <div className="section-form">
-//                                     <h1 className="main-heading">Contact Us</h1>
-//                                     <br/>
-    
-//                                     <form onSubmit = {handleContactForm}>
-    
-//                                         <div>
-//                                             <label htmlFor="username">username</label>
-//                                             <input 
-//                                                 type="text" 
-//                                                 name="username"
-//                                                 placeholder="" 
-//                                                 id="username"
-//                                                 required
-//                                                 autoComplete="off"
-//                                                 value = {data.username}
-//                                                 onChange = {handleInput}
-//                                             />
-//                                         </div>
-    
-//                                         <div>
-//                                             <label htmlFor="email">email</label>
-//                                             <input 
-//                                                 type="email" 
-//                                                 name="email"
-//                                                 placeholder="" 
-//                                                 id="email"
-//                                                 required
-//                                                 autoComplete="off"
-//                                                 value = {data.email}
-//                                                 onChange = {handleInput}
-//                                             />
-//                                         </div>
-    
-//                                         <div>
-//                                             <label htmlFor="message">message</label>
-//                                             <textarea 
-//                                                 name="message"
-//                                                 id="message"
-//                                                 cols = "30"
-//                                                 rows =  "6"
-//                                                 value = {data.message}
-//                                                 onChange = {handleInput}
-//                                             > </textarea >
-//                                         </div>
-    
-//                                         <br />
-                                        
-//                                         <button> Submit </button>
-    
-    
-//                                     </form>
-//                                 </div>
-    
-//                             </div>
-//                         </div>
-//                     </main>
-                    
-//                     <section className = "mb-3">
-//                         <iframe
-//                             src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3667.4973993967487!2d72.62634057509705!3d23.18853697905787!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395c2a3c9618d2c5%3A0xc54de484f986b1fa!2sDA-IICT!5e0!3m2!1sen!2sin!4v1711559050687!5m2!1sen!2sin"
-//                             width = "100%"
-//                             height = "450"
-//                             allowFullScreen
-//                             loading="lazy"
-//                             referrerPolicy="no-referrer-when-downgrade"
-                        
-//                         ></iframe>
-//                     </section>
-    
-    
-//                 </section>
-    
-//             </>
-//         )
-// };
-
-// export default Contact;

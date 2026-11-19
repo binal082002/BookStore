@@ -1,213 +1,66 @@
-// import { useEffect, useState } from "react";
-// import { useParams } from "react-router-dom";
-// import { useAuth } from "../store/auth";
-// import { toast } from "react-toastify";
-
-// const Order = () => {
-//   const { user } = useAuth();
-
-//   const [book, setBook] = useState({});
-
-//   const params = useParams();
-//   const { authToken } = useAuth();
-
-//   // Get single user data
-//   const getBookData = async () => {
-//     try {
-//       const response = await fetch(
-//         `https://bookstore-fd4d.onrender.com/api/store/book/${params.id}`,
-//         {
-//           method: "GET",
-//           headers: {
-//             Authorization: authToken,
-//           },
-//         }
-//       );
-
-//       const res_data = await response.json();
-//       setBook(res_data.data);
-//     } catch (err) {
-//       console.log(err);
-//     }
-//   };
-
-//   useEffect(() => {
-//     getBookData();
-//   }, []);
-
-//   // To display updated data
-//   const handleSubmit = async (e) => {
-//     e.preventDefault(); // prevent default form submission behavior
-
-//     const order = {
-//       user: user._id,
-//       book: book._id,
-//       totalAmount: book.price,
-//       status: "Pending",
-//     };
-
-//     try {
-//       const response = await fetch(
-//         `https://bookstore-fd4d.onrender.com/api/create/order`,
-//         {
-//           method: "POST",
-//           headers: {
-//             "Content-Type": "application/json",
-//             Authorization: authToken,
-//           },
-//           body: JSON.stringify(order),
-//         }
-//       );
-
-//       if (response.ok) {
-//         toast.success("Order saved successfully!");
-//       } else {
-//         toast.error("Order not confirmed!");
-//       }
-//     } catch (err) {
-//       console.log(err);
-//     }
-//   };
-
-//   const handlePay = async() => {
-//     e.preventDefault(); // prevent default form submission behavior
-
-//     try{
-//         const response = await fetch("http://localhost:5000/api/payment/checkout",
-//           {
-//               method: "POST",
-//               headers : { "Content-Type" : "application/json"},                
-//               body: JSON.stringify({amount : totalAmount})
-//       })
-
-//       const key_res = await fetch("http://localhost:5000/api/key",{
-//           method : "GET"
-//       });
-
-//       const {key_id} = await key_res.json();
-//       // console.log(key_id);
-
-//       const res = await response.json();
-//       // console.log(user.phone);
-
-//       var options = {
-//           key: key_id, // Enter the Key ID generated from the Dashboard
-//           amount: res.order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-//           currency: "INR",
-//           name: "Binal",
-//           description: "Test Transaction",
-//           image: "/images/logo.png",
-//           order_id: res.order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-//           callback_url: "http://localhost:5000/api/payment/verification",
-//           prefill: {
-//               name: user.username,
-//               email: user.email,
-//               contact: user.phone
-//           },
-//           notes: {
-//               "address": "Razorpay Corporate Office"
-//           },
-//           theme: {
-//               "color": "#671b7d" //rgb(102, 6, 147),
-//           }
-//       };
-
-//       var rzp1 = new window.Razorpay(options);
-//       rzp1.open();
-//     }catch(err){
-//       toast.error("Payment Unsucessful!!");
-//       console.log("Error in payment!!");
-//     }
-//   }
-
-//   return (
-//     <>
-//       <section>
-//         <main>
-//           <div className="section-contact">
-//             <div className="container grid grid-two-cols">
-//               <div className="section-form">
-//                 <h1 className="main-heading">Order Details</h1>
-//                 <br />
-
-//                 <form>
-//                   <div className="input-like">
-//                     <label htmlFor="username">Username</label>
-//                     <div id="username" className="input-like-box">
-//                       {user.username}
-//                     </div>
-//                   </div>
-
-//                   <div className="input-like">
-//                     <label htmlFor="email">Email</label>
-//                     <div id="email" className="input-like-box">
-//                       {user.email}
-//                     </div>
-//                   </div>
-
-//                   <div className="input-like">
-//                     <label htmlFor="title">Book Title</label>
-//                     <div id="title" className="input-like-box">
-//                       {book.title}
-//                     </div>
-//                   </div>
-
-//                   <div className="input-like">
-//                     <label htmlFor="author">Author</label>
-//                     <div id="author" className="input-like-box">
-//                       {book.author}
-//                     </div>
-//                   </div>
-
-//                   <div className="input-like">
-//                     <label htmlFor="amount">Amount</label>
-//                     <div id="amount" className="input-like-box">
-//                       {book.price}
-//                     </div>
-//                   </div>
-
-//                   <br />
-
-//                   <div>
-//                     <button onClick = {handleSubmit}>Confirm</button>
-//                     <button onClick = {handlePay} className="other-btn">Pay</button>
-//                   </div>
-//                 </form>
-//               </div>
-//             </div>
-//           </div>
-//         </main>
-//       </section>
-//     </>
-//   );
-// };
-
-// export default Order;
-
-import { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useAuth } from "../store/auth";
 import { toast } from "react-toastify";
 import Modal from "react-modal";
+import API_BASE_URL from "../utils/api";
+import { useParams, useLocation } from "react-router-dom";
 
-Modal.setAppElement('#root'); // This is important for accessibility reasons
+Modal.setAppElement("#root");
 
 const Order = () => {
-  const { user } = useAuth();
-  const [book, setBook] = useState({});
-  const [showPayButton, setShowPayButton] = useState(false);
+  const { user, authToken } = useAuth();
+  const { id } = useParams();
+  const location = useLocation();
+
+  const [book, setBook] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isCreatingOrder, setIsCreatingOrder] = useState(false);
+  const [isPaying, setIsPaying] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const {authToken} = useAuth();
+  const [orderId, setOrderId] = useState(location.state?.existingOrderId || "");
+  const [isExistingOrder, setIsExistingOrder] = useState(
+    Boolean(location.state?.existingOrderId)
+  );
+  const [isCheckingPendingOrder, setIsCheckingPendingOrder] = useState(true);
 
-  const params = useParams();
-
-  // Get single book data
-  // Get single book data
+  // Fetch selected book
   useEffect(() => {
     const getBookData = async () => {
       try {
+        setIsLoading(true);
+
+        const response = await fetch(`${API_BASE_URL}/api/store/book/${id}`, {
+          headers: {
+            Authorization: authToken,
+          },
+        });
+
+        const resData = await response.json();
+
+        if (!response.ok) {
+          throw new Error(resData.message || "Unable to fetch book details.");
+        }
+
+        setBook(resData.data);
+      } catch (error) {
+        console.error("Book fetch error:", error);
+        toast.error(error.message || "Unable to load book.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    getBookData();
+  }, [id, authToken]);
+
+  // Check for an existing pending order
+  useEffect(() => {
+    const getPendingOrder = async () => {
+      setIsCheckingPendingOrder(true);
+
+      try {
         const response = await fetch(
-          `https://bookstore-fd4d.onrender.com/api/store/book/${params.id}`,
+          `${API_BASE_URL}/api/create/order/pending/${id}`,
           {
             method: "GET",
             headers: {
@@ -216,193 +69,356 @@ const Order = () => {
           }
         );
 
-        const res_data = await response.json();
-        setBook(res_data.data);
-      } catch (err) {
-        console.log(err);
+        const resData = await response.json();
+
+        if (!response.ok) {
+          throw new Error(resData.message || "Unable to check pending order.");
+        }
+
+        if (resData.order) {
+          setOrderId(resData.order._id);
+          setIsExistingOrder(true);
+        } else {
+          setOrderId("");
+          setIsExistingOrder(false);
+        }
+      } catch (error) {
+        console.error("Pending order check error:", error);
+        toast.error("Unable to check your existing order.");
+      } finally {
+        setIsCheckingPendingOrder(false);
       }
     };
 
-    getBookData();
-  }, []);
+    if (id && authToken) {
+      getPendingOrder();
+    } else {
+      setIsCheckingPendingOrder(false);
+    }
+  }, [id, authToken]);
 
-  // To create and save order
+  // Create order
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const order = {
-      user: user._id,
-      book: book._id,
-      totalAmount: book.price,
-      status: "Pending",
-    };
+    // If an order was already created, reuse it instead of creating another.
+    if (orderId) {
+      setModalIsOpen(true);
+      return;
+    }
+
+    if (!book?._id) {
+      toast.error("Book details are unavailable.");
+      return;
+    }
+
+    if (Number(book.stock) <= 0) {
+      toast.error("This book is currently out of stock.");
+      return;
+    }
 
     try {
-      const response = await fetch(
-        `https://bookstore-fd4d.onrender.com/api/create/order`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: authToken,
-          },
-          body: JSON.stringify(order),
-        }
-      );
+      setIsCreatingOrder(true);
 
-      const res = await response.json();
+      const response = await fetch(`${API_BASE_URL}/api/create/order`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: authToken,
+        },
+        body: JSON.stringify({ book: book._id }),
+      });
 
-      if (response.ok) {
-        // setOrderId(res.order._id); // Update order ID
-        localStorage.setItem("orderId", res.order._id); // Store order ID in local storage
+      const resData = await response.json();
 
-        setShowPayButton(true);
-        setModalIsOpen(true);
-        toast.success("Order saved successfully!");
-      } else {
-        toast.error("Order not confirmed!");
+      if (!response.ok) {
+        throw new Error(resData.message || "Unable to create order.");
       }
-    } catch (err) {
-      console.log(err);
+
+      const createdOrderId = resData.order._id;
+      setIsExistingOrder(response.status === 200);
+
+      setOrderId(createdOrderId);
+      localStorage.setItem("orderId", createdOrderId);
+
+      setModalIsOpen(true);
+      if (response.status === 200) {
+        toast.info(
+          "You already have a pending order. You can continue payment."
+        );
+      } else {
+        toast.success("Order created successfully!");
+      }
+    } catch (error) {
+      console.error("Create order error:", error);
+      toast.error(error.message || "Something went wrong.");
+    } finally {
+      setIsCreatingOrder(false);
     }
   };
 
-  // Handle payment
-  const handlePay = async (e) => {
-    e.preventDefault();
+  // Initiate Razorpay payment
+  const handlePay = async () => {
+    if (!orderId) {
+      toast.error("Order not found. Please try again.");
+      return;
+    }
 
-    const totalAmount = book.price; // ensure totalAmount is defined
     try {
-          const response = await fetch("https://bookstore-fd4d.onrender.com/api/payment/checkout",
-              {
-                  method: "POST",
-                  headers : { "Content-Type" : "application/json"},                
-                  body: JSON.stringify({amount : totalAmount})
-          })
+      setIsPaying(true);
 
-          const key_res = await fetch("https://bookstore-fd4d.onrender.com/api/key",{
-              method : "GET"
-          });
+      const response = await fetch(`${API_BASE_URL}/api/payment/checkout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: authToken,
+        },
+        body: JSON.stringify({ orderId }),
+      });
 
-          const {key_id} = await key_res.json();
-          // console.log(key_id);
+      const resData = await response.json();
 
-          const res = await response.json();
-          // console.log(user.phone);
+      if (!response.ok) {
+        throw new Error(resData.message || "Unable to initiate payment.");
+      }
 
-          var options = {
-              key: key_id, // Enter the Key ID generated from the Dashboard
-              amount: res.order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-              currency: "INR",
-              name: "Binal",
-              description: "Test Transaction",
-              image: "/images/logo.png",
-              order_id: res.order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-              callback_url: "https://bookstore-fd4d.onrender.com/api/payment/verification",
-              prefill: {
-                  name: user.username,
-                  email: user.email,
-                  contact: user.phone
-              },
-              notes: {
-                  "address": "Razorpay Corporate Office"
-              },
-              theme: {
-                  "color": "#671b7d" //rgb(102, 6, 147),
-              }
-          };
+      const keyResponse = await fetch(`${API_BASE_URL}/api/key`);
 
-          var rzp1 = new window.Razorpay(options);
-          rzp1.open();
-    } catch (err) {
-      toast.error("Payment Unsuccessful!!");
-      console.log("Error in payment!!");
+      if (!keyResponse.ok) {
+        throw new Error("Unable to fetch payment key.");
+      }
+
+      const { key_id } = await keyResponse.json();
+
+      if (!window.Razorpay) {
+        throw new Error("Payment service is unavailable. Please try again.");
+      }
+
+      const options = {
+        key: key_id,
+        amount: resData.order.amount,
+        currency: "INR",
+        name: "BookShelf",
+        description: `Purchase: ${book.title}`,
+        image: "/images/logo.png",
+        order_id: resData.order.id,
+        callback_url: `${API_BASE_URL}/api/payment/verification`,
+        prefill: {
+          name: user?.username || "",
+          email: user?.email || "",
+          contact: user?.phone || "",
+        },
+        theme: {
+          color: "#684477",
+        },
+      };
+
+      const razorpay = new window.Razorpay(options);
+
+      razorpay.open();
+      setModalIsOpen(false);
+    } catch (error) {
+      console.error("Payment error:", error);
+      toast.error(error.message || "Unable to start payment.");
+    } finally {
+      setIsPaying(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <main className="flex min-h-[70vh] items-center justify-center bg-[#fffdf9]">
+        <p className="text-lg font-medium text-stone-600">
+          Loading book details...
+        </p>
+      </main>
+    );
+  }
+
+  if (!book) {
+    return (
+      <main className="flex min-h-[70vh] flex-col items-center justify-center bg-[#fffdf9] px-6 text-center">
+        <h1 className="text-2xl font-bold text-stone-900">Book not found</h1>
+        <p className="mt-3 text-stone-600">
+          We couldn't find the book you're looking for.
+        </p>
+      </main>
+    );
+  }
+
+  const isOutOfStock = Number(book.stock) <= 0;
 
   return (
-    <>
-      <section>
-        <main>
-          <div className="section-contact">
-            <div className="container grid grid-two-cols">
-              <div className="section-form">
-                <h1 className="main-heading">Order Details</h1>
-                <br />
+    <main className="min-h-screen bg-[#fffdf9] px-6 py-12 sm:px-10">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-10">
+          <p className="text-sm font-semibold uppercase tracking-widest text-[#684477]">
+            YOUR PURCHASE
+          </p>
 
-                <form>
-                  <div className="input-like">
-                    <label htmlFor="username">Username</label>
-                    <div id="username" className="input-like-box">
-                      {user.username}
-                    </div>
-                  </div>
+          <h1 className="mt-3 text-3xl font-bold text-stone-900 sm:text-4xl">
+            Order Details
+          </h1>
 
-                  <div className="input-like">
-                    <label htmlFor="email">Email</label>
-                    <div id="email" className="input-like-box">
-                      {user.email}
-                    </div>
-                  </div>
+          <p className="mt-3 text-stone-600">
+            Review your details and selected book before proceeding.
+          </p>
+        </div>
 
-                  <div className="input-like">
-                    <label htmlFor="title">Book Title</label>
-                    <div id="title" className="input-like-box">
-                      {book.title}
-                    </div>
-                  </div>
+        <div className="grid items-start gap-8 lg:grid-cols-5">
+          {/* Book details */}
+          <section className="rounded-2xl border border-stone-200 bg-white p-7 shadow-sm lg:col-span-3">
+            <h2 className="text-xl font-bold text-stone-900">Selected Book</h2>
 
-                  <div className="input-like">
-                    <label htmlFor="author">Author</label>
-                    <div id="author" className="input-like-box">
-                      {book.author}
-                    </div>
-                  </div>
+            <div className="mt-7 flex flex-col gap-7 sm:flex-row">
+              <div className="flex justify-center sm:w-2/5">
+                <div className="flex h-72 w-52 items-center justify-center overflow-hidden rounded-xl bg-stone-100 p-3">
+                  <img
+                    src={book.cover_image_url}
+                    alt={book.title}
+                    className="h-full w-full rounded-lg object-contain"
+                  />
+                </div>
+              </div>
 
-                  <div className="input-like">
-                    <label htmlFor="amount">Amount</label>
-                    <div id="amount" className="input-like-box">
-                      {book.price}
-                    </div>
-                  </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-[#684477]">
+                  {book.genre}
+                </p>
 
-                  <br />
+                <h3 className="mt-2 text-2xl font-bold text-stone-900">
+                  {book.title}
+                </h3>
 
-                  <div>
-                    <button onClick={handleSubmit}>Confirm</button>
-                  </div>
-                </form>
+                <p className="mt-2 text-stone-600">By {book.author}</p>
 
-                {showPayButton && (
-                  <Modal
-                    isOpen={modalIsOpen}
-                    onRequestClose={() => setModalIsOpen(false)}
-                    className="modal"
-                    overlayClassName="modal-overlay"
-                    contentLabel="Payment Modal"
-                  >
-                    <div className="modal-header">Proceed to Payment</div>
-                    <div className="modal-buttons">
-                      <button className="modal-button pay-button" onClick={handlePay}>
-                        Pay
-                      </button>
-                      <button
-                        className="modal-button cancel-button"
-                        onClick={() => setModalIsOpen(false)}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </Modal>
-                )}
+                <p className="mt-5 text-2xl font-bold text-[#684477]">
+                  ₹{Number(book.price).toLocaleString("en-IN")}
+                </p>
+
+                <p
+                  className={`mt-3 text-sm font-semibold ${
+                    isOutOfStock ? "text-red-600" : "text-green-700"
+                  }`}
+                >
+                  {isOutOfStock ? "Out of stock" : "In stock"}
+                </p>
               </div>
             </div>
-          </div>
-        </main>
-      </section>
-    </>
+          </section>
+
+          {/* Customer details */}
+          <section className="rounded-2xl border border-stone-200 bg-white p-7 shadow-sm lg:col-span-2">
+            <h2 className="text-xl font-bold text-stone-900">
+              Customer Details
+            </h2>
+
+            <div className="mt-7 space-y-6">
+              <div>
+                <p className="text-sm font-medium text-stone-500">Username</p>
+                <p className="mt-1 font-semibold text-stone-900">
+                  {user?.username || "Not available"}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-sm font-medium text-stone-500">
+                  Email address
+                </p>
+                <p className="mt-1 break-all font-semibold text-stone-900">
+                  {user?.email || "Not available"}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-sm font-medium text-stone-500">
+                  Phone number
+                </p>
+                <p className="mt-1 font-semibold text-stone-900">
+                  {user?.phone || "Not available"}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-8 border-t border-stone-200 pt-6">
+              <div className="flex items-center justify-between">
+                <span className="font-medium text-stone-600">Total amount</span>
+
+                <span className="text-xl font-bold text-stone-900">
+                  ₹{Number(book.price).toLocaleString("en-IN")}
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={
+                  isCheckingPendingOrder || isCreatingOrder || isOutOfStock
+                }
+                className="mt-7 w-full rounded-xl bg-[#684477] px-6 py-3.5 font-semibold text-white transition hover:bg-[#543563] disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isCheckingPendingOrder
+                  ? "Checking order..."
+                  : isCreatingOrder
+                  ? "Creating order..."
+                  : isOutOfStock
+                  ? "Out of Stock"
+                  : orderId
+                  ? "Continue to Payment"
+                  : "Confirm Order"}
+              </button>
+              {isOutOfStock && (
+                <p className="mt-3 text-center text-sm text-red-600">
+                  This book is currently unavailable. Payment cannot be
+                  initiated.
+                </p>
+              )}
+            </div>
+          </section>
+        </div>
+      </div>
+
+      {/* Payment confirmation modal */}
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => setModalIsOpen(false)}
+        className="mx-auto mt-[25vh] w-[90%] max-w-md rounded-2xl bg-white p-7 shadow-xl outline-none"
+        overlayClassName="fixed inset-0 z-[100] bg-black/50 px-4"
+        contentLabel="Payment confirmation"
+      >
+        <h2 className="text-2xl font-bold text-stone-900">
+          Proceed to Payment?
+        </h2>
+
+        <p className="mt-3 leading-7 text-stone-600">
+          {isExistingOrder
+            ? "Your previous pending order is ready. Continue to Razorpay to complete your purchase."
+            : "Your order has been created successfully. Continue to Razorpay to complete your purchase."}
+        </p>
+
+        <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+          <button
+            type="button"
+            onClick={handlePay}
+            disabled={isPaying}
+            className="flex-1 rounded-xl bg-[#684477] px-5 py-3 font-semibold text-white transition hover:bg-[#543563] disabled:opacity-60"
+          >
+            {isPaying ? "Please wait..." : "Proceed to Pay"}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setModalIsOpen(false)}
+            disabled={isPaying}
+            className="flex-1 rounded-xl border border-stone-300 px-5 py-3 font-semibold text-stone-700 transition hover:bg-stone-100"
+          >
+            Cancel
+          </button>
+        </div>
+      </Modal>
+    </main>
   );
 };
 
 export default Order;
-

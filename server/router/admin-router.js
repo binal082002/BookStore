@@ -12,6 +12,8 @@ router.route("/users/delete/:id").delete(authMiddleware, adminMiddleware, adminC
 router.route("/contacts").get(authMiddleware, adminMiddleware, adminController.getAllContacts);
 router.route("/contacts/delete/:id").delete(authMiddleware, adminMiddleware, adminController.deleteContactById);
 router.route("/add/book").post(authMiddleware, adminMiddleware, adminController.addBook);
-
+router.route("/books/:id").get(authMiddleware, adminMiddleware, adminController.getBookById);
+router.route("/books/update/:id").patch(authMiddleware, adminMiddleware, adminController.updateBookById);
+router.route("/books").get(authMiddleware, adminMiddleware, adminController.getAllBooks);
 router.route("/orders").get(authMiddleware, adminMiddleware, adminController.getAllOrders);
 module.exports = router;
